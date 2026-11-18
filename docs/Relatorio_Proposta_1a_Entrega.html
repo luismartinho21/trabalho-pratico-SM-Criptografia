@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <title>Relatório de Proposta - CryptoLumar</title>
+  <style>
+    @page {
+      size: A4 portrait;
+      margin: 14mm 16mm 14mm 16mm;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Segoe UI', Arial, Helvetica, sans-serif;
+      font-size: 10pt;
+      line-height: 1.4;
+      color: #1e293b;
+      background: #ffffff;
+    }
+    .page {
+      width: 100%;
+      min-height: 268mm;
+      max-height: 268mm;
+      page-break-after: always;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+    }
+    .page:last-child {
+      page-break-after: avoid;
+    }
+    .header-box {
+      border-bottom: 2px solid #0284c7;
+      padding-bottom: 6px;
+      margin-bottom: 10px;
+    }
+    .institution {
+      font-size: 8.5pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #0369a1;
+      letter-spacing: 0.5px;
+    }
+    .sub-inst {
+      font-size: 8pt;
+      color: #64748b;
+      margin-bottom: 4px;
+    }
+    .doc-title {
+      font-size: 14pt;
+      font-weight: 800;
+      color: #0f172a;
+      margin-top: 2px;
+    }
+    .meta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 4px;
+      padding: 6px 10px;
+      margin-bottom: 10px;
+      font-size: 8.5pt;
+    }
+    .meta-item strong {
+      color: #0f172a;
+    }
+    h2 {
+      font-size: 11pt;
+      font-weight: 700;
+      color: #0369a1;
+      border-left: 3px solid #0284c7;
+      padding-left: 6px;
+      margin-top: 8px;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    h3 {
+      font-size: 9.5pt;
+      font-weight: 700;
+      color: #0f172a;
+      margin-top: 6px;
+      margin-bottom: 2px;
+    }
+    p {
+      margin-bottom: 5px;
+      text-align: justify;
+    }
+    ul {
+      margin-left: 18px;
+      margin-bottom: 6px;
+    }
+    li {
+      margin-bottom: 2px;
+    }
+    .concept-card {
+      background: #f0f9ff;
+      border: 1px solid #bae6fd;
+      border-radius: 4px;
+      padding: 6px 10px;
+      margin-bottom: 6px;
+    }
+    .concept-title {
+      font-weight: 700;
+      color: #0369a1;
+      font-size: 9pt;
+      margin-bottom: 2px;
+    }
+    .concept-desc {
+      font-size: 8.5pt;
+      color: #334155;
+    }
+    .wireframe-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 8px 0;
+    }
+    .wireframe-box {
+      border: 1px dashed #64748b;
+      border-radius: 6px;
+      padding: 8px;
+      background: #f8fafc;
+      text-align: center;
+    }
+    .wireframe-box h4 {
+      font-size: 8.5pt;
+      font-weight: 700;
+      color: #334155;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+    }
+    .wireframe-svg {
+      width: 100%;
+      height: 145px;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+    }
+    .git-box {
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      padding: 6px 10px;
+      margin-top: 6px;
+      font-size: 8.5pt;
+    }
+    .git-url {
+      font-family: 'Courier New', Courier, monospace;
+      font-weight: bold;
+      color: #0369a1;
+      word-break: break-all;
+    }
+    .footer-note {
+      font-size: 7.5pt;
+      color: #94a3b8;
+      text-align: center;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 4px;
+      margin-top: 6px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ================= PÁGINA 1 ================= -->
+  <div class="page">
+    <div>
+      <div class="header-box">
+        <div class="institution">Instituto Politécnico de Viana do Castelo — ESTG</div>
+        <div class="sub-inst">Licenciatura em Engenharia da Computação Gráfica e Multimédia | Sistemas Multimédia 2026/2027</div>
+        <div class="doc-title">Relatório de Proposta de Jogo — CryptoLumar</div>
+      </div>
+
+      <div class="meta-grid">
+        <div class="meta-item"><strong>Estudante:</strong> Luís Martinho Oliveira Lopes</div>
+        <div class="meta-item"><strong>Tema Atribuído:</strong> g) Criptografia e proteção de informação</div>
+        <div class="meta-item"><strong>Framework:</strong> Phaser.io (v4) / Arcade Physics</div>
+        <div class="meta-item"><strong>Repositório Git:</strong> luismartinho21/trabalho-pratico-SM-Criptografia</div>
+      </div>
+
+      <h2>1. Objetivo do Jogo</h2>
+      <p>
+        <strong>CryptoLumar: Protocolo Cipher</strong> é um jogo 2D original de ação e infiltração cibernética desenvolvido com a framework Phaser v4. O jogador controla um especialista em segurança de informação com a missão de penetrar num complexo de servidores corporativos corrompidos por malware, neutralizar firewalls ativas e extrair pacotes de dados vitais antes que os sistemas de defesa esgotem a integridade da ligação.
+      </p>
+      <p>
+        O jogo possui um <strong>sistema de pontuação contínuo</strong> exibido no HUD durante as partidas e no ecrã de resultados finais, calculado com base em:
+      </p>
+      <ul>
+        <li><strong>Validação Criptográfica:</strong> Pontos atribuídos pela resolução exata de operações XOR e validação de pacotes íntegros;</li>
+        <li><strong>Fator Tempo:</strong> Bónus proporcional à rapidez na neutralização dos setores e fuga para o terminal de extração;</li>
+        <li><strong>Bónus de Sobrevivência:</strong> Pontos adicionais por vidas/integridade remanescentes e penalizações por alarmes ativados.</li>
+      </ul>
+
+      <h2>2. Funcionalidades a Implementar e Conceitos Técnicos</h2>
+      <p>
+        Dando cumprimento estrito ao requisito de integrar <strong>dois conceitos técnicos distintos implementados através de mecânicas e algoritmos funcionais</strong>, o jogo articula os seguintes sistemas:
+      </p>
+
+      <div class="concept-card">
+        <div class="concept-title">Conceito Técnico 1: Cifra Simétrica por Máscara XOR (Bitwise Stream Cipher) — Nível 1</div>
+        <div class="concept-desc">
+          <strong>Mecânica:</strong> No Nível 1, as barreiras de contenção (firewalls lógicas) contêm um valor numérico de estado cifrado (ex: máscara binária de 3 bits <code>0b101</code>). O jogador deve explorar o mapa para recolher fragmentos de chaves simétricas. Ao interagir com a barreira, o algoritmo calcula programaticamente a operação bit a bit <code>Estado_Barreira XOR Chave</code>. Apenas quando o resultado da operação é estritamente neutro (<code>0x00</code>) a barreira é desativada; se a chave for incorreta ou nula, a barreira mantém-se impenetrável e repele o jogador.
+        </div>
+      </div>
+
+      <div class="concept-card">
+        <div class="concept-title">Conceito Técnico 2: Verificação de Integridade por Função Hash (Cryptographic Checksum) — Nível 2</div>
+        <div class="concept-desc">
+          <strong>Mecânica:</strong> No Nível 2, o complexo sofreu um ataque <em>Man-in-the-Middle</em> que injetou pacotes de dados fraudulentos. O terminal central anuncia o <em>Hash Digest</em> legítimo esperado. Cada pacote possui uma carga útil cuja função de dispersão criptográfica (hash polinomial de 16 bits) é calculada dinamicamente pelo jogo. O jogador tem de inspecionar os blocos: recolher um pacote autêntico valida a extração (+pontos), enquanto recolher um bloco adulterado dispara contra-medidas imediatas (-1 vida e alerta sonoro).
+        </div>
+      </div>
+
+      <h3>Funcionalidades Gerais do Sistema:</h3>
+      <ul>
+        <li><strong>Dois Níveis Progressivos:</strong> Nível 1 focado na cifra simétrica XOR; Nível 2 integrando cálculo de Hashes e sentinelas velozes;</li>
+        <li><strong>Aleatoriedade Controlada:</strong> Posições e valores das chaves/pacotes são gerados proceduralmente a cada sessão;</li>
+        <li><strong>Controlo de Cenas (Phaser Scenes):</strong> Menu Inicial, Ecrã de Instruções com tutorial, Cena de Jogo e Ecrã de Game Over / Vitória;</li>
+        <li><strong>Física e Movimento:</strong> Arcade Physics para movimentação fluida do jogador (WASD/Setas), colisão com barreiras e patrulhas inimigas;</li>
+        <li><strong>Persistência e Áudio:</strong> Registo de recordes via <code>localStorage</code> e implementação de efeitos sonoros temáticos.</li>
+      </ul>
+    </div>
+
+    <div class="footer-note">
+      Trabalho Prático de Sistemas Multimédia 2026/2027 — Proposta e Especificação Inicial (Página 1 de 2)
+    </div>
+  </div>
+
+  <!-- ================= PÁGINA 2 ================= -->
+  <div class="page">
+    <div>
+      <div class="header-box">
+        <div class="institution">Sistemas Multimédia 2026/2027 — ESTG / IPVC</div>
+        <div class="doc-title">Protótipo de Baixa Fidelidade e Repositório Oficial</div>
+      </div>
+
+      <h2>3. Protótipo de Baixa Fidelidade (Wireframes)</h2>
+      <p>
+        Para validar a arquitetura visual e a experiência de utilizador (UI/UX) foram desenhados os protótipos de baixa fidelidade para os dois ecrãs estruturantes da aplicação: o <strong>Ecrã de Entrada (Menu Principal)</strong> e o <strong>Ecrã de Jogabilidade (Gameplay / HUD)</strong>.
+      </p>
+
+      <div class="wireframe-container">
+        <!-- Wireframe 1: Menu -->
+        <div class="wireframe-box">
+          <h4>Ecrã 1: Menu Principal e Navegação</h4>
+          <svg class="wireframe-svg" viewBox="0 0 400 240" xmlns="http://www.w3.org/2000/svg">
+            <!-- Fundo da janela -->
+            <rect x="5" y="5" width="390" height="230" fill="#f1f5f9" stroke="#64748b" stroke-width="1.5" rx="4"/>
+            <!-- Título -->
+            <rect x="60" y="25" width="280" height="35" fill="#e2e8f0" stroke="#94a3b8" stroke-width="1" rx="3"/>
+            <text x="200" y="47" font-family="monospace" font-size="14" font-weight="bold" fill="#0f172a" text-anchor="middle">[ TÍTULO: CRYPTOLUMAR ]</text>
+            <text x="200" y="74" font-family="sans-serif" font-size="9" fill="#64748b" text-anchor="middle">Protocolo Cipher: Criptografia e Infiltração</text>
+            <!-- Recorde -->
+            <rect x="110" y="85" width="180" height="20" fill="#fef08a" stroke="#ca8a04" stroke-width="0.8" rx="2"/>
+            <text x="200" y="99" font-family="monospace" font-size="9" fill="#854d0e" text-anchor="middle">★ MELHOR PONTUAÇÃO: 0000 ★</text>
+            <!-- Botão Jogar -->
+            <rect x="100" y="118" width="200" height="30" fill="#bae6fd" stroke="#0284c7" stroke-width="1.2" rx="4"/>
+            <text x="200" y="137" font-family="sans-serif" font-size="11" font-weight="bold" fill="#0369a1" text-anchor="middle">INICIAR MISSÃO (PLAY)</text>
+            <!-- Botão Instruções -->
+            <rect x="100" y="156" width="200" height="28" fill="#e2e8f0" stroke="#94a3b8" stroke-width="1" rx="4"/>
+            <text x="200" y="174" font-family="sans-serif" font-size="10" fill="#334155" text-anchor="middle">INSTRUÇÕES & CONCEITOS</text>
+            <!-- Rodapé de autoria -->
+            <text x="200" y="215" font-family="sans-serif" font-size="8" fill="#94a3b8" text-anchor="middle">ESTG-IPVC | Luís Martinho Oliveira Lopes</text>
+          </svg>
+        </div>
+
+        <!-- Wireframe 2: Gameplay -->
+        <div class="wireframe-box">
+          <h4>Ecrã 2: Interface de Jogabilidade (Gameplay)</h4>
+          <svg class="wireframe-svg" viewBox="0 0 400 240" xmlns="http://www.w3.org/2000/svg">
+            <!-- Fundo da arena -->
+            <rect x="5" y="5" width="390" height="230" fill="#0f172a" stroke="#64748b" stroke-width="1.5" rx="4"/>
+            <!-- HUD Superior -->
+            <rect x="12" y="12" width="376" height="25" fill="#1e293b" stroke="#334155" stroke-width="1" rx="3"/>
+            <text x="20" y="28" font-family="monospace" font-size="9" fill="#38ef7d">VIDAS: ♥♥♥</text>
+            <text x="110" y="28" font-family="monospace" font-size="9" fill="#38bdf8">NÍVEL: 1/2</text>
+            <text x="200" y="28" font-family="monospace" font-size="9" fill="#facc15">SCORE: 0450</text>
+            <text x="310" y="28" font-family="monospace" font-size="9" fill="#f43f5e">XOR: 0b101</text>
+            <!-- Paredes / Barreiras do Mapa -->
+            <rect x="12" y="45" width="376" height="180" fill="#090d16" stroke="#1e293b" stroke-width="1"/>
+            <!-- Barreira Laser Cifrada -->
+            <rect x="180" y="90" width="16" height="90" fill="#ef4444" stroke="#fca5a5" stroke-dasharray="3,2"/>
+            <text x="188" y="82" font-family="monospace" font-size="7.5" fill="#ef4444" text-anchor="middle">FIREWALL XOR</text>
+            <!-- Jogador (Player) -->
+            <circle cx="60" cy="170" r="14" fill="#0ea5e9" stroke="#ffffff" stroke-width="1.5"/>
+            <text x="60" y="196" font-family="sans-serif" font-size="8" fill="#38bdf8" text-anchor="middle">Agente</text>
+            <!-- Chave Simétrica -->
+            <rect x="110" y="80" width="14" height="14" fill="#eab308" stroke="#fef08a"/>
+            <text x="117" y="105" font-family="sans-serif" font-size="7.5" fill="#facc15" text-anchor="middle">Chave K</text>
+            <!-- Inimigo em Patrulha -->
+            <polygon points="260,110 275,135 245,135" fill="#dc2626"/>
+            <line x1="260" y1="90" x2="260" y2="160" stroke="#f87171" stroke-width="1" stroke-dasharray="2,2"/>
+            <text x="260" y="172" font-family="sans-serif" font-size="7.5" fill="#f87171" text-anchor="middle">Sentinela</text>
+            <!-- Terminal de Saída -->
+            <circle cx="345" cy="80" r="16" fill="#8b5cf6" stroke="#c084fc" stroke-width="1.5"/>
+            <text x="345" y="108" font-family="sans-serif" font-size="7.5" fill="#c084fc" text-anchor="middle">Extração</text>
+          </svg>
+        </div>
+      </div>
+
+      <h2>4. Repositório Git e Versionamento</h2>
+      <p>
+        O código-fonte do projeto encontra-se alojado num repositório público no GitHub com a estrutura inicial de ficheiros, módulos e documentação devidamente configurada.
+      </p>
+
+      <div class="git-box">
+        <strong>URL do Repositório Git Oficial:</strong><br>
+        <span class="git-url">https://github.com/luismartinho21/trabalho-pratico-SM-Criptografia</span>
+        <div style="margin-top: 4px; font-size: 8pt; color: #475569;">
+          • Ramo principal: <code>main</code> | Commits progressivos e classes ES6 modulares.<br>
+          • <em>Nota: Conforme estipulado no enunciado, a ideia central do jogo não sofrerá alterações nas fases posteriores.</em>
+        </div>
+      </div>
+
+      <h2>5. Cronograma de Desenvolvimento (Metas até 08/12/2026)</h2>
+      <table style="width: 100%; border-collapse: collapse; font-size: 8.5pt; margin-top: 6px;">
+        <thead>
+          <tr style="background: #e2e8f0; color: #0f172a; border-bottom: 1.5px solid #cbd5e1;">
+            <th style="padding: 4px 6px; text-align: left;">Fase / Período</th>
+            <th style="padding: 4px 6px; text-align: left;">Objetivos e Tarefas Técnicas</th>
+            <th style="padding: 4px 6px; text-align: center;">Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 4px 6px; font-weight: bold;">Fase 1 (18 Nov)</td>
+            <td style="padding: 4px 6px;">Entrega do Relatório de Proposta, protótipo de baixa fidelidade e criação do repositório Git.</td>
+            <td style="padding: 4px 6px; text-align: center; color: #16a34a; font-weight: bold;">Concluído</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 4px 6px; font-weight: bold;">Fase 2 (19-25 Nov)</td>
+            <td style="padding: 4px 6px;">Implementação detalhada do Nível 1 (Cifra XOR), mecânica de colisão e spritesheets animados.</td>
+            <td style="padding: 4px 6px; text-align: center; color: #0284c7;">A decorrer</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 4px 6px; font-weight: bold;">Fase 3 (26 Nov - 02 Dez)</td>
+            <td style="padding: 4px 6px;">Desenvolvimento do Nível 2 (Funções Hash), efeitos sonoros e gravação em localStorage.</td>
+            <td style="padding: 4px 6px; text-align: center; color: #64748b;">Agendado</td>
+          </tr>
+          <tr>
+            <td style="padding: 4px 6px; font-weight: bold;">Fase 4 (03-08 Dez)</td>
+            <td style="padding: 4px 6px;">Polimento final, Diário de Desenvolvimento, elaboração do Relatório Final e vídeo promocional.</td>
+            <td style="padding: 4px 6px; text-align: center; color: #64748b;">Agendado</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="footer-note">
+      Trabalho Prático de Sistemas Multimédia 2026/2027 — Proposta e Especificação Inicial (Página 2 de 2)
+    </div>
+  </div>
+
+</body>
+</html>
