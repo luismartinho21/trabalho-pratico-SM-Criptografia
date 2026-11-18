@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CryptoLumar: Protocolo Cipher - Phaser 4</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background-color: #0b0f19;
+      color: #e2e8f0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+    #game-container {
+      border: 2px solid #00f0ff;
+      border-radius: 8px;
+      box-shadow: 0 0 25px rgba(0, 240, 255, 0.35);
+      background: #000;
+    }
+    header {
+      margin-bottom: 12px;
+      text-align: center;
+    }
+    h1 {
+      font-size: 1.6rem;
+      letter-spacing: 2px;
+      color: #00f0ff;
+      text-shadow: 0 0 10px rgba(0, 240, 255, 0.6);
+    }
+    p.subtitle {
+      font-size: 0.85rem;
+      color: #94a3b8;
+    }
+  </style>
+  <!-- Phaser.io v4 -->
+  <script src="https://cdn.jsdelivr.net/npm/phaser@4/dist/phaser.min.js"></script>
+</head>
+<body>
+  <header>
+    <h1>CRYPTOLUMAR</h1>
+    <p class="subtitle">Sistemas Multimédia 2026/2027 — Criptografia e Proteção de Informação</p>
+  </header>
+
+  <div id="game-container"></div>
+
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>
