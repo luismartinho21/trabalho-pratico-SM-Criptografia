@@ -5,7 +5,7 @@ import { HashVerifier } from '../crypto/HashVerifier.js';
 
 /**
  * GameScene.js
- * Cena principal de jogabilidade com gestão de níveis, colisões e mecânicas criptográficas.
+ * Cena de jogabilidade com Tilemaps, Arcade Physics, animações e efeitos sonoros.
  */
 export class GameScene extends Phaser.Scene {
   constructor() {
@@ -16,30 +16,41 @@ export class GameScene extends Phaser.Scene {
     this.currentLevel = data.level || 1;
     this.score = data.score || 0;
     this.lives = data.lives !== undefined ? data.lives : 3;
+    this.hasAuthenticData = false;
   }
 
   create() {
     const width = this.cameras.main.width;
     const height = this.cameras.main.height;
 
-    // Fundo do setor
-    this.add.rectangle(0, 0, width, height, 0x0a0f1d).setOrigin(0);
+    // 1. Carregamento e renderização do Tilemap
+    const mapKey = this.currentLevel === 1 ? 'map_level1' : 'map_level2';
+    this.map = this.make.tilemap({ key: mapKey });
+    const tileset = this.map.addTilesetImage('cyber_tileset', 'tileset');
 
-    // Grelha de ciberespaço estilizada
-    const grid = this.add.grid(width / 2, height / 2, width, height, 32, 32, 0x000000, 0, 0x1e293b, 0.4);
+    this.groundLayer = this.map.createLayer('Ground', tileset, 0, 0);
+    this.wallsLayer = this.map.createLayer('Walls', tileset, 0, 0);
 
-    // Grupos de Física Arcade
+    // Ativar colisão em todos os tiles de parede marcados
+    this.wallsLayer.setCollisionByProperty({ collides: true });
+
+    // 2. Grupos de Física Arcade
     this.keysGroup = this.physics.add.group();
     this.barriersGroup = this.physics.add.staticGroup();
     this.packetsGroup = this.physics.add.group();
     this.enemiesGroup = this.physics.add.group();
 
-    // Inicialização da Personagem
-    this.player = new Player(this, 80, height - 90);
+    // 3. Inicialização do Jogador
+    const startX = 64;
+    const startY = height - 80;
+    this.player = new Player(this, startX, startY);
     this.player.lives = this.lives;
     this.player.score = this.score;
 
-    // Teclas de Entrada
+    // Colisão do jogador com as paredes do mapa
+    this.physics.add.collider(this.player, this.wallsLayer);
+
+    // 4. Controlos
     this.cursors = this.input.keyboard.createCursorKeys();
     this.wasd = this.input.keyboard.addKeys({
       W: Phaser.Input.Keyboard.KeyCodes.W,
@@ -49,21 +60,22 @@ export class GameScene extends Phaser.Scene {
       SPACE: Phaser.Input.Keyboard.KeyCodes.SPACE
     });
 
-    // Configuração do Nível correspondente
+    // 5. Configuração específica do Nível
     if (this.currentLevel === 1) {
       this.setupLevel1();
     } else {
       this.setupLevel2();
     }
 
-    // Configuração do Terminal de Extração (Saída)
-    this.exitTerminal = this.physics.add.staticSprite(width - 70, 90, 'exit-terminal');
+    // 6. Terminal de Extração (Saída)
+    this.exitTerminal = this.physics.add.staticSprite(720, 80, 'terminal');
     this.physics.add.overlap(this.player, this.exitTerminal, this.handleExitReached, null, this);
 
-    // Colisões com Inimigos
+    // 7. Colisões com Inimigos e Barreiras
     this.physics.add.overlap(this.player, this.enemiesGroup, this.handleEnemyCollision, null, this);
+    this.physics.add.collider(this.enemiesGroup, this.wallsLayer);
 
-    // Interface HUD
+    // 8. Interface HUD e Áudio
     this.setupHUD();
   }
 
@@ -72,42 +84,53 @@ export class GameScene extends Phaser.Scene {
     const cipherData = XorCipher.generateRandomCipher(3);
     this.activeCipher = cipherData;
 
-    // Criar Barreira Laser Cifrada
-    const barrier = this.barriersGroup.create(400, 280, 'laser-barrier');
+    // Barreira Laser animada na passagem estratégica do mapa
+    const barrierY = 336;
+    const barrier = this.barriersGroup.create(432, barrierY, 'laser');
+    barrier.play('laser_glow');
     barrier.cipherValue = cipherData.cipherValue;
     barrier.activeState = true;
+    barrier.refreshBody();
 
-    this.barrierLabel = this.add.text(400, 245, `FIREWALL [XOR: 0b${cipherData.binaryString}]`, {
+    this.barrierLabel = this.add.text(432, barrierY - 26, `FIREWALL [0b${cipherData.binaryString}]`, {
       fontFamily: 'monospace',
-      fontSize: '12px',
+      fontSize: '11px',
       color: '#ff0055',
-      backgroundColor: '#000000'
+      backgroundColor: '#0a0f1d',
+      padding: { x: 4, y: 2 }
     }).setOrigin(0.5);
 
-    // Colisão do jogador com a barreira
-    this.physics.add.collider(this.player, this.barriersGroup, (player, bar) => {
-      if (bar.activeState) {
-        this.statusText.setText(`Aviso: Barreira ativa! Necessita da Chave XOR correspondente.`);
-      }
+    // Colisão com barreira
+    this.physics.add.collider(this.player, this.barriersGroup, () => {
+      this.statusText.setText(`Aviso: Barreira laser ativa! Necessita da Chave XOR correta.`);
     });
 
-    // Criar Chave Simétrica (Aleatoriedade controlada na posição)
-    const keyX = Phaser.Math.Between(200, 320);
-    const keyY = Phaser.Math.Between(150, 400);
-    const cryptoKey = this.keysGroup.create(keyX, keyY, 'crypto-key');
+    // Posicionamento da Chave Criptográfica na sala superior esquerda
+    const cryptoKey = this.keysGroup.create(144, 144, 'crypto-key');
     cryptoKey.keyValue = cipherData.keyValue;
 
+    // Efeito de flutuação na chave
+    this.tweens.add({
+      targets: cryptoKey,
+      y: 138,
+      duration: 800,
+      yoyo: true,
+      repeat: -1
+    });
+
+    // Recolha da chave
     this.physics.add.overlap(this.player, this.keysGroup, (player, keyItem) => {
+      this.sound.play('snd_pickup', { volume: 0.7 });
       this.player.collectedKeys.push(keyItem.keyValue);
       keyItem.destroy();
       this.player.addScore(150);
       this.updateHUD();
-      this.statusText.setText(`Chave simétrica adquirida (0b${cipherData.binaryString})! Pressione [ESPAÇO] junto à barreira para aplicar XOR.`);
+      this.statusText.setText(`Chave simétrica adquirida (0b${cipherData.binaryString})! Pressione [ESPAÇO] junto à Firewall.`);
     });
 
-    // Adicionar Patrulhas Inimigas
-    const sentry1 = new Enemy(this, 300, 150, 100, false);
-    const sentry2 = new Enemy(this, 550, 350, 120, true);
+    // Patrulhas Sentinelas
+    const sentry1 = new Enemy(this, 300, 430, 90, false);
+    const sentry2 = new Enemy(this, 620, 260, 110, true);
     this.enemiesGroup.add(sentry1);
     this.enemiesGroup.add(sentry2);
   }
@@ -117,32 +140,42 @@ export class GameScene extends Phaser.Scene {
     this.targetPacket = HashVerifier.generatePacket('01', false);
     this.tamperedPacket = HashVerifier.generatePacket('02', true);
 
-    // Posicionamento aleatório dos pacotes
     const positions = [
-      { x: 260, y: 180 },
-      { x: 500, y: 380 }
+      { x: 176, y: 144 },
+      { x: 528, y: 368 }
     ];
     Phaser.Utils.Array.Shuffle(positions);
 
-    // Pacote legítimo
+    // Pacote autêntico
     const p1 = this.packetsGroup.create(positions[0].x, positions[0].y, 'data-packet');
     p1.packetData = this.targetPacket;
 
-    // Pacote adulterado
+    // Pacote corrompido
     const p2 = this.packetsGroup.create(positions[1].x, positions[1].y, 'data-packet');
     p2.packetData = this.tamperedPacket;
+
+    // Animação de flutuação nos pacotes
+    this.tweens.add({
+      targets: [p1, p2],
+      y: '+=6',
+      duration: 700,
+      yoyo: true,
+      repeat: -1
+    });
 
     this.physics.add.overlap(this.player, this.packetsGroup, (player, packetSprite) => {
       const data = packetSprite.packetData;
       const isValid = HashVerifier.verifyIntegrity(data.payload, data.declaredHash);
 
       if (isValid) {
+        this.sound.play('snd_unlock', { volume: 0.8 });
         this.player.addScore(300);
-        this.statusText.setText(`SUCESSO: Pacote íntegro [Hash: ${data.declaredHash}] validado!`);
+        this.statusText.setText(`SUCESSO: Pacote autêntico [Hash #${data.declaredHash}] validado! Siga para a extração.`);
         this.hasAuthenticData = true;
       } else {
+        this.sound.play('snd_alarm', { volume: 0.8 });
         this.player.takeDamage(1);
-        this.statusText.setText(`ALERTA: Pacote ADULTERADO detetado! Hash violado (-1 Vida).`);
+        this.statusText.setText(`ALERTA: Pacote ADULTERADO por Man-in-the-Middle! Hash incorreto (-1 Vida).`);
       }
 
       packetSprite.destroy();
@@ -152,28 +185,30 @@ export class GameScene extends Phaser.Scene {
       }
     });
 
-    // Inimigos mais rápidos no Nível 2
-    const sentry1 = new Enemy(this, 250, 280, 130, false);
-    const sentry2 = new Enemy(this, 480, 200, 140, true);
-    sentry1.speed = 110;
-    sentry2.speed = 110;
+    // Sentinelas do Nível 2
+    const sentry1 = new Enemy(this, 300, 224, 110, false);
+    const sentry2 = new Enemy(this, 560, 224, 110, true);
+    sentry1.speed = 105;
+    sentry2.speed = 105;
     this.enemiesGroup.add(sentry1);
     this.enemiesGroup.add(sentry2);
   }
 
   setupHUD() {
-    const width = this.cameras.main.width;
-
-    this.hudText = this.add.text(16, 16, '', {
+    this.hudText = this.add.text(16, 12, '', {
       fontFamily: 'monospace',
-      fontSize: '14px',
-      color: '#00f0ff'
+      fontSize: '13px',
+      color: '#00f0ff',
+      backgroundColor: '#0a0f1d',
+      padding: { x: 6, y: 3 }
     });
 
-    this.statusText = this.add.text(16, 45, 'Missão iniciada. Explora o terminal e resolve o desafio criptográfico.', {
+    this.statusText = this.add.text(16, 38, 'Missão iniciada. Explore os corredores e resolva o desafio criptográfico.', {
       fontFamily: 'sans-serif',
-      fontSize: '12px',
-      color: '#cbd5e1'
+      fontSize: '11px',
+      color: '#cbd5e1',
+      backgroundColor: '#0a0f1d',
+      padding: { x: 6, y: 2 }
     });
 
     this.updateHUD();
@@ -182,24 +217,20 @@ export class GameScene extends Phaser.Scene {
   updateHUD() {
     let cryptoInfo = '';
     if (this.currentLevel === 1) {
-      const keysCount = this.player.collectedKeys.length;
-      cryptoInfo = `Chaves XOR: ${keysCount}`;
+      cryptoInfo = `Chave XOR: ${this.player.collectedKeys.length > 0 ? 'ADQUIRIDA' : 'EM FALTA'}`;
     } else {
-      cryptoInfo = `Digest Alvo: #${this.targetPacket.declaredHash}`;
+      cryptoInfo = `Hash Alvo: #${this.targetPacket.declaredHash}`;
     }
 
     this.hudText.setText(
-      `NÍVEL: ${this.currentLevel}/2 | VIDAS: ${this.player.lives} | PONTUAÇÃO: ${this.player.score} | ${cryptoInfo}`
+      `NÍVEL: ${this.currentLevel}/2 | VIDAS: ${'♥'.repeat(Math.max(0, this.player.lives))} | PONTOS: ${this.player.score} | ${cryptoInfo}`
     );
   }
 
   update() {
     this.player.update(this.cursors, this.wasd);
-
-    // Atualizar sentinelas
     this.enemiesGroup.getChildren().forEach(enemy => enemy.update());
 
-    // Interação com a tecla ESPAÇO para decifrar barreiras
     if (Phaser.Input.Keyboard.JustDown(this.wasd.SPACE)) {
       this.tryDecryptBarrier();
     }
@@ -207,14 +238,16 @@ export class GameScene extends Phaser.Scene {
 
   tryDecryptBarrier() {
     if (this.currentLevel === 1 && this.player.collectedKeys.length > 0) {
-      const dist = Phaser.Math.Distance.Between(this.player.x, this.player.y, 400, 280);
-      if (dist < 110) {
+      const dist = Phaser.Math.Distance.Between(this.player.x, this.player.y, 432, 336);
+      if (dist < 90) {
         const key = this.player.collectedKeys[0];
         const match = XorCipher.isMatch(this.activeCipher.cipherValue, key);
+
         if (match) {
+          this.sound.play('snd_unlock', { volume: 0.8 });
           this.barriersGroup.clear(true, true);
-          this.barrierLabel.setText('FIREWALL NEUTRALIZADA (XOR = 0x00)').setColor('#38ef7d');
-          this.statusText.setText('Cifra decifrada com sucesso! Caminho livre para a extração.');
+          this.barrierLabel.setText('0b101 ⊕ 0b101 = 0b000 (DESBLOQUEADO)').setColor('#38ef7d');
+          this.statusText.setText('Cálculo XOR bem-sucedido! Acesso aberto para o terminal de extração.');
           this.player.addScore(200);
           this.updateHUD();
         }
@@ -225,7 +258,7 @@ export class GameScene extends Phaser.Scene {
   handleEnemyCollision(player, enemy) {
     const isDead = player.takeDamage(1);
     this.updateHUD();
-    this.statusText.setText('DANO: Deteção por sentinela cibernética!');
+    this.statusText.setText('DANO: Deteção e interferência de sentinela cibernética!');
     if (isDead) {
       this.triggerGameOver(false);
     }
@@ -233,13 +266,19 @@ export class GameScene extends Phaser.Scene {
 
   handleExitReached() {
     if (this.currentLevel === 1) {
+      this.sound.play('snd_complete', { volume: 0.8 });
       this.scene.start('GameScene', {
         level: 2,
         score: this.player.score + 250,
         lives: this.player.lives
       });
     } else {
-      this.triggerGameOver(true);
+      if (this.hasAuthenticData) {
+        this.sound.play('snd_complete', { volume: 0.8 });
+        this.triggerGameOver(true);
+      } else {
+        this.statusText.setText('ACESSO NEGADO: Deve recuperar e validar o bloco de dados autêntico primeiro!');
+      }
     }
   }
 

@@ -1,6 +1,6 @@
 /**
  * Enemy.js
- * Sentinela de segurança / Patrulha cibernética com Arcade Physics.
+ * Sentinela de segurança com animações de alerta e física Arcade.
  */
 export class Enemy extends Phaser.Physics.Arcade.Sprite {
   constructor(scene, x, y, patrolDistance = 120, isVertical = false) {
@@ -13,10 +13,14 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
     this.startY = y;
     this.patrolDistance = patrolDistance;
     this.isVertical = isVertical;
-    this.speed = 80;
+    this.speed = 85;
     this.direction = 1;
 
     this.setImmovable(true);
+    this.body.setSize(22, 22);
+    this.body.setOffset(5, 5);
+
+    this.play('enemy_pulse');
   }
 
   update() {

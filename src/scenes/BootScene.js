@@ -1,6 +1,6 @@
 /**
  * BootScene.js
- * Pré-carregamento de assets e criação de texturas e paletas visuais.
+ * Pré-carregamento de assets (tilemaps, spritesheets, áudio) e criação de animações.
  */
 export class BootScene extends Phaser.Scene {
   constructor() {
@@ -8,19 +8,20 @@ export class BootScene extends Phaser.Scene {
   }
 
   preload() {
-    // Barra de progresso visual de carregamento
     const width = this.cameras.main.width;
     const height = this.cameras.main.height;
-    
-    const progressBar = this.add.graphics();
+
+    // Interface visual de carregamento
     const progressBox = this.add.graphics();
-    progressBox.fillStyle(0x222222, 0.8);
+    const progressBar = this.add.graphics();
+    progressBox.fillStyle(0x111827, 0.85);
     progressBox.fillRect(width / 2 - 160, height / 2 - 25, 320, 50);
 
-    const loadingText = this.add.text(width / 2, height / 2 - 50, 'A carregar CryptoLumar...', {
-      font: '16px monospace',
+    const loadingText = this.add.text(width / 2, height / 2 - 45, 'A carregar CryptoLumar...', {
+      fontFamily: 'monospace',
+      fontSize: '15px',
       color: '#00f0ff'
-    }).setOrigin(0.5, 0.5);
+    }).setOrigin(0.5);
 
     this.load.on('progress', (value) => {
       progressBar.clear();
@@ -34,64 +35,67 @@ export class BootScene extends Phaser.Scene {
       loadingText.destroy();
     });
 
-    // Criação programática de texturas base para arranque imediato
-    this.createProceduralTextures();
-  }
+    // 1. Tilemaps e Tilesets
+    this.load.image('tileset', 'assets/images/tileset.png');
+    this.load.tilemapTiledJSON('map_level1', 'assets/maps/level1.json');
+    this.load.tilemapTiledJSON('map_level2', 'assets/maps/level2.json');
 
-  createProceduralTextures() {
-    // 1. Textura do Jogador (Criptógrafo)
-    const playerGraphics = this.make.graphics({ x: 0, y: 0, add: false });
-    playerGraphics.fillStyle(0x00f0ff, 1);
-    playerGraphics.fillRoundedRect(0, 0, 32, 32, 6);
-    playerGraphics.fillStyle(0x0a192f, 1);
-    playerGraphics.fillRect(6, 6, 20, 10); // Visor
-    playerGraphics.fillStyle(0x38ef7d, 1);
-    playerGraphics.fillCircle(12, 11, 2);
-    playerGraphics.fillCircle(20, 11, 2);
-    playerGraphics.generateTexture('player', 32, 32);
+    // 2. Spritesheets
+    this.load.spritesheet('player', 'assets/images/player.png', {
+      frameWidth: 32,
+      frameHeight: 32
+    });
+    this.load.spritesheet('enemy', 'assets/images/enemy.png', {
+      frameWidth: 32,
+      frameHeight: 32
+    });
+    this.load.spritesheet('laser', 'assets/images/laser.png', {
+      frameWidth: 32,
+      frameHeight: 32
+    });
 
-    // 2. Textura do Inimigo / Sentinela
-    const enemyGraphics = this.make.graphics({ x: 0, y: 0, add: false });
-    enemyGraphics.fillStyle(0xff0055, 1);
-    enemyGraphics.fillTriangle(16, 0, 32, 32, 0, 32);
-    enemyGraphics.fillStyle(0xffffff, 1);
-    enemyGraphics.fillCircle(16, 18, 4);
-    enemyGraphics.generateTexture('enemy', 32, 32);
+    // 3. Imagens / Itens
+    this.load.image('crypto-key', 'assets/images/key.png');
+    this.load.image('data-packet', 'assets/images/data_packet.png');
+    this.load.image('terminal', 'assets/images/terminal.png');
 
-    // 3. Chave Criptográfica Simétrica
-    const keyGraphics = this.make.graphics({ x: 0, y: 0, add: false });
-    keyGraphics.fillStyle(0xffd700, 1);
-    keyGraphics.fillCircle(12, 12, 8);
-    keyGraphics.fillRect(10, 14, 4, 12);
-    keyGraphics.fillRect(14, 20, 5, 3);
-    keyGraphics.generateTexture('crypto-key', 24, 28);
-
-    // 4. Barreira Laser Cifrada
-    const laserGraphics = this.make.graphics({ x: 0, y: 0, add: false });
-    laserGraphics.fillStyle(0xff0033, 0.85);
-    laserGraphics.fillRect(0, 0, 96, 16);
-    laserGraphics.lineStyle(2, 0xffffff, 1);
-    laserGraphics.strokeRect(0, 0, 96, 16);
-    laserGraphics.generateTexture('laser-barrier', 96, 16);
-
-    // 5. Pacote de Dados (Data Shard)
-    const dataGraphics = this.make.graphics({ x: 0, y: 0, add: false });
-    dataGraphics.fillStyle(0x00ff88, 1);
-    dataGraphics.fillRoundedRect(0, 0, 24, 24, 4);
-    dataGraphics.fillStyle(0x000000, 0.6);
-    dataGraphics.fillRect(4, 8, 16, 8);
-    dataGraphics.generateTexture('data-packet', 24, 24);
-
-    // 6. Terminal de Extração / Saída
-    const exitGraphics = this.make.graphics({ x: 0, y: 0, add: false });
-    exitGraphics.fillStyle(0x7928ca, 1);
-    exitGraphics.fillCircle(24, 24, 22);
-    exitGraphics.lineStyle(3, 0x00f0ff, 1);
-    exitGraphics.strokeCircle(24, 24, 22);
-    exitGraphics.generateTexture('exit-terminal', 48, 48);
+    // 4. Efeitos Sonoros
+    this.load.audio('snd_pickup', 'assets/audio/pickup.wav');
+    this.load.audio('snd_unlock', 'assets/audio/unlock.wav');
+    this.load.audio('snd_alarm', 'assets/audio/alarm.wav');
+    this.load.audio('snd_click', 'assets/audio/click.wav');
+    this.load.audio('snd_complete', 'assets/audio/complete.wav');
   }
 
   create() {
+    // Criação de Animações Globais
+    this.anims.create({
+      key: 'player_idle',
+      frames: [{ key: 'player', frame: 0 }],
+      frameRate: 1
+    });
+
+    this.anims.create({
+      key: 'player_walk',
+      frames: this.anims.generateFrameNumbers('player', { start: 0, end: 3 }),
+      frameRate: 8,
+      repeat: -1
+    });
+
+    this.anims.create({
+      key: 'enemy_pulse',
+      frames: this.anims.generateFrameNumbers('enemy', { start: 0, end: 3 }),
+      frameRate: 6,
+      repeat: -1
+    });
+
+    this.anims.create({
+      key: 'laser_glow',
+      frames: this.anims.generateFrameNumbers('laser', { start: 0, end: 2 }),
+      frameRate: 10,
+      repeat: -1
+    });
+
     this.scene.start('MenuScene');
   }
 }

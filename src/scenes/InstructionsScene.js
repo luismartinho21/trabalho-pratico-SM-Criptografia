@@ -1,6 +1,6 @@
 /**
  * InstructionsScene.js
- * Ecrã de instruções detalhando os controlos e a aplicação prática dos conceitos de criptografia.
+ * Ecrã de instruções com controlos e conceitos criptográficos.
  */
 export class InstructionsScene extends Phaser.Scene {
   constructor() {
@@ -13,9 +13,9 @@ export class InstructionsScene extends Phaser.Scene {
 
     this.add.rectangle(0, 0, width, height, 0x070b14).setOrigin(0);
 
-    this.add.text(width / 2, 50, 'INSTRUÇÕES & PROTOCOLOS', {
+    this.add.text(width / 2, 45, 'INSTRUÇÕES & PROTOCOLOS', {
       fontFamily: 'monospace',
-      fontSize: '28px',
+      fontSize: '26px',
       fontStyle: 'bold',
       color: '#38ef7d'
     }).setOrigin(0.5);
@@ -23,42 +23,42 @@ export class InstructionsScene extends Phaser.Scene {
     const instructionsText = [
       'CONTROLOS DO AGENTE:',
       '• Movimento: Setas do Teclado ou Teclas [W, A, S, D]',
-      '• Interagir / Aplicar Chave: Tecla [ESPAÇO]',
+      '• Interagir / Aplicar Chave XOR: Tecla [ESPAÇO]',
       '',
       'CONCEITOS CRIPTOGRÁFICOS DO JOGO:',
       '1. CIFRA SIMÉTRICA XOR (Nível 1):',
-      '   - As barreiras contêm um valor binário/máscara cifrada.',
-      '   - Recolhe chaves simétricas e ativa o decifrador.',
-      '   - O jogo calcula (Estado XOR Chave); se o resultado for 0, o caminho abre.',
+      '   - As firewalls possuem um valor de máscara binária.',
+      '   - Recolha a chave simétrica e pressione [ESPAÇO] junto à barreira.',
+      '   - O algoritmo calcula (Estado XOR Chave); se o valor for 0, a passagem abre.',
       '',
-      '2. INTEGRIDADE & HASHES CRIPTOGRÁFICOS (Nível 2):',
-      '   - Infiltra-te no servidor e recolhe os pacotes de dados.',
-      '   - Atenção ao Hash Digest esperado anunciado pelo terminal.',
-      '   - Pacotes com integridade comprometida ativam o alarme e causam dano.',
+      '2. INTEGRIDADE & FUNÇÃO HASH (Nível 2):',
+      '   - Servidor sob ataque Man-in-the-Middle com pacotes adulterados.',
+      '   - Inspecione e recolha apenas o bloco cujo Hash coincide com o digest alvo.',
+      '   - Pacotes adulterados causam alarme sonoro e reduzem vidas.',
       '',
-      'OBJETIVO: Neutralizar as firewalls, recolher os dados legítimos e alcançar a saída!'
+      'OBJETIVO: Resgatar os dados íntegros e alcançar o terminal de extração!'
     ];
 
-    this.add.text(70, 100, instructionsText, {
+    this.add.text(60, 95, instructionsText, {
       fontFamily: 'monospace',
-      fontSize: '13px',
+      fontSize: '12px',
       color: '#cbd5e1',
-      lineSpacing: 6
+      lineSpacing: 5
     });
 
-    // Botão Voltar ao Menu
-    const backBtn = this.add.rectangle(width / 2, height - 50, 200, 40, 0x1e293b)
+    const backBtn = this.add.rectangle(width / 2, height - 45, 200, 38, 0x1e293b)
       .setStrokeStyle(2, 0x38ef7d)
       .setInteractive({ useHandCursor: true });
 
-    this.add.text(width / 2, height - 50, 'VOLTAR AO MENU', {
+    this.add.text(width / 2, height - 45, 'VOLTAR AO MENU', {
       fontFamily: 'monospace',
-      fontSize: '14px',
+      fontSize: '13px',
       fontStyle: 'bold',
       color: '#ffffff'
     }).setOrigin(0.5);
 
     backBtn.on('pointerdown', () => {
+      this.sound.play('snd_click', { volume: 0.6 });
       this.scene.start('MenuScene');
     });
   }

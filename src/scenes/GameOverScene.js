@@ -1,6 +1,6 @@
 /**
  * GameOverScene.js
- * Ecrã de fim de jogo com apresentação de resultados, gravação de recordes e opção de recomeço.
+ * Ecrã de resultados, pontuação final, recordes e opção de recomeçar.
  */
 export class GameOverScene extends Phaser.Scene {
   constructor() {
@@ -23,18 +23,18 @@ export class GameOverScene extends Phaser.Scene {
     const titleText = this.victory ? 'MISSÃO CUMPRIDA!' : 'SISTEMA COMPROMETIDO';
     const subText = this.victory
       ? 'Todos os protocolos criptográficos foram resgatados com sucesso!'
-      : 'As sentinelas intercetaram a tua ligação cibernética.';
+      : 'As sentinelas intercetaram a sua ligação cibernética.';
 
-    this.add.text(width / 2, 100, titleText, {
+    this.add.text(width / 2, 95, titleText, {
       fontFamily: 'monospace',
-      fontSize: '36px',
+      fontSize: '34px',
       fontStyle: 'bold',
       color: titleColor
     }).setOrigin(0.5);
 
-    this.add.text(width / 2, 150, subText, {
+    this.add.text(width / 2, 145, subText, {
       fontFamily: 'sans-serif',
-      fontSize: '14px',
+      fontSize: '13px',
       color: '#94a3b8'
     }).setOrigin(0.5);
 
@@ -46,48 +46,50 @@ export class GameOverScene extends Phaser.Scene {
       isNewRecord = true;
     }
 
-    this.add.text(width / 2, 220, `PONTUAÇÃO FINAL: ${this.score}`, {
+    this.add.text(width / 2, 215, `PONTUAÇÃO FINAL: ${this.score}`, {
       fontFamily: 'monospace',
       fontSize: '22px',
       color: '#ffffff'
     }).setOrigin(0.5);
 
     if (isNewRecord) {
-      this.add.text(width / 2, 260, '★ NOVO RECORDE REGISTADO! ★', {
+      this.add.text(width / 2, 255, '★ NOVO RECORDE REGISTADO! ★', {
         fontFamily: 'monospace',
-        fontSize: '16px',
+        fontSize: '15px',
         color: '#ffd700'
       }).setOrigin(0.5);
     }
 
     // Botão Jogar Novamente
-    const restartBtn = this.add.rectangle(width / 2, 340, 240, 48, 0x111827)
+    const restartBtn = this.add.rectangle(width / 2, 335, 240, 46, 0x111827)
       .setStrokeStyle(2, 0x00f0ff)
       .setInteractive({ useHandCursor: true });
 
-    this.add.text(width / 2, 340, 'JOGAR NOVAMENTE', {
+    this.add.text(width / 2, 335, 'JOGAR NOVAMENTE', {
       fontFamily: 'monospace',
-      fontSize: '16px',
+      fontSize: '15px',
       fontStyle: 'bold',
       color: '#ffffff'
     }).setOrigin(0.5);
 
     restartBtn.on('pointerdown', () => {
+      this.sound.play('snd_click', { volume: 0.6 });
       this.scene.start('GameScene', { level: 1, score: 0, lives: 3 });
     });
 
     // Botão Menu Inicial
-    const menuBtn = this.add.rectangle(width / 2, 410, 240, 44, 0x111827)
+    const menuBtn = this.add.rectangle(width / 2, 400, 240, 42, 0x111827)
       .setStrokeStyle(2, 0x64748b)
       .setInteractive({ useHandCursor: true });
 
-    this.add.text(width / 2, 410, 'MENU PRINCIPAL', {
+    this.add.text(width / 2, 400, 'MENU PRINCIPAL', {
       fontFamily: 'monospace',
-      fontSize: '14px',
+      fontSize: '13px',
       color: '#cbd5e1'
     }).setOrigin(0.5);
 
     menuBtn.on('pointerdown', () => {
+      this.sound.play('snd_click', { volume: 0.6 });
       this.scene.start('MenuScene');
     });
   }
